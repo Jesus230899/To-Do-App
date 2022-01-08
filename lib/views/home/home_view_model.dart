@@ -1,15 +1,31 @@
 import 'package:to_do_app/core/base/base_view_model.dart';
+import 'package:to_do_app/core/models/task_model.dart';
+import 'package:to_do_app/core/services/http_services.dart';
 
 class HomeViewModel extends BaseViewModel {
-  int _counter;
+  final _httpServices = HTTPServices();
 
-  HomeViewModel({int counter = 0}) : this._counter = counter;
+  List<TaskModel> _tasks = [];
+  bool _loader = true;
 
-  int get counter => this._counter;
-  set counter(int value) {
-    this._counter = value;
+  // Getters
+  List<TaskModel> get tasks => _tasks;
+  bool get loader => _loader;
+
+  // Setters
+  set tasks(List<TaskModel> value) {
+    _tasks = value;
     notifyListeners();
   }
 
-  void increment() => this.counter += 1;
+  set loader(bool value) {
+    _loader = value;
+    notifyListeners();
+  }
+
+  Future<void> onInit() async {
+    var resp = await _httpServices.getNotes();
+    tasks = resp;
+    loader = false;
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:to_do_app/core/routes.dart';
 import 'package:to_do_app/theme/theme.dart';
 
 import 'core/locator.dart';
@@ -23,7 +24,8 @@ class MainApplication extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: locator<NavigatorService>().navigatorKey,
         theme: theme,
-        home: HomeView(),
+        home: const HomeView(),
+        routes: routes,
       ),
     );
   }
