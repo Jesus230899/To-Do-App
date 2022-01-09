@@ -9,7 +9,15 @@ class _HomeMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: _body(),
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: RefreshIndicator(
+            color: AppColors.accentColor,
+            onRefresh: () async {
+              await vM.getNotes();
+            },
+            child: _body(context)),
+      ),
       floatingActionButton: _btnAdd(context),
     );
   }
@@ -20,21 +28,35 @@ class _HomeMobile extends StatelessWidget {
         elevation: 0);
   }
 
-  Widget _body() {
-    return vM.loader ? showLoader() : _lisTasks();
+  Widget _body(BuildContext context) {
+    return vM.loader ? Center(child: showLoader()) : _lisTasks(context);
   }
 
-  Widget _lisTasks() {
+  Widget _lisTasks(BuildContext context) {
+    const int appBarHeight = 50;
     if (vM.tasks.isEmpty) {
-      return FadeIn(
-          child:
-              const Center(child: Text('Aún no se ha escrito ninguna nota')));
+      return ListView(
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height -
+                  kToolbarHeight -
+                  appBarHeight,
+              child: Center(
+                child: FadeIn(
+                    child: const Text('Aún no se ha escrito una tarea.',
+                        style: TextStyle(color: Colors.grey))),
+              ),
+            ),
+          ]);
     } else {
       return FadeIn(
         child: ListView.builder(
           shrinkWrap: true,
-          physics: const BouncingScrollPhysics(),
-          itemCount: vM.tasks.length,
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+          itemCount: 10,
           itemBuilder: (context, index) =>
               _itemTask(task: vM.tasks[index], context: context),
         ),

@@ -24,6 +24,11 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future<void> onInit() async {
+    await getNotes();
+  }
+
+  Future<void> getNotes() async {
+    print('Entra');
     var resp = await _httpServices.getNotes();
     tasks = resp;
     loader = false;

@@ -10,7 +10,7 @@ class TaskModel {
 
   String title;
   bool isCompleted;
-  DateTime dueDate;
+  String dueDate;
   String comments;
   String description;
   String tags;

@@ -9,7 +9,7 @@ class _TaskMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(context),
-      body: _body(),
+      body: _body(context),
     );
   }
 
@@ -25,11 +25,12 @@ class _TaskMobile extends StatelessWidget {
         ]);
   }
 
-  Widget _body() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(children: [
-        Form(
+  Widget _body(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Form(
             key: vM.formKey,
             child: Column(children: [
               TextFormField(
@@ -38,14 +39,19 @@ class _TaskMobile extends StatelessWidget {
                   controller: vM.titleController,
                   decoration: _decoration(isTitle: true),
                   style: const TextStyle(fontSize: 24)),
-              TextFormField(
-                  // If we want validate with validator atribute uncomment this line
-                  // validator: emptyValidator,
-                  controller: vM.descriptionControler,
-                  decoration: _decoration(isTitle: false),
-                  style: const TextStyle(fontSize: 16)),
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: TextFormField(
+                    maxLines:
+                        MediaQuery.of(context).size.height.toInt() ~/ 24 - 2,
+                    // If we want validate with validator atribute uncomment this line
+                    // validator: emptyValidator,
+                    controller: vM.descriptionControler,
+                    decoration: _decoration(isTitle: false),
+                    style: const TextStyle(fontSize: 16)),
+              ),
             ])),
-      ]),
+      ),
     );
   }
 
