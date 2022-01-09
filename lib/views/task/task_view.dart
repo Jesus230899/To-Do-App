@@ -3,6 +3,8 @@ library task_view;
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:to_do_app/core/validator.dart';
+import 'package:to_do_app/theme/theme.dart';
 import 'task_view_model.dart';
 
 part 'task_mobile.dart';
@@ -18,6 +20,7 @@ class TaskView extends StatelessWidget {
     return ViewModelBuilder<TaskViewModel>.reactive(
         viewModelBuilder: () => viewModel,
         onModelReady: (viewModel) {
+          viewModel.onInit(context: context);
           // Do something once your viewModel is initialized
         },
         builder: (context, viewModel, child) {

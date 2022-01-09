@@ -26,20 +26,26 @@ class _HomeMobile extends StatelessWidget {
 
   Widget _lisTasks() {
     if (vM.tasks.isEmpty) {
-      return const Center(child: Text('Aún no se ha escrito ninguna nota'));
+      return FadeIn(
+          child:
+              const Center(child: Text('Aún no se ha escrito ninguna nota')));
     } else {
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
-        itemCount: vM.tasks.length,
-        itemBuilder: (context, index) => _itemTask(vM.tasks[index]),
+      return FadeIn(
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: const BouncingScrollPhysics(),
+          itemCount: vM.tasks.length,
+          itemBuilder: (context, index) =>
+              _itemTask(task: vM.tasks[index], context: context),
+        ),
       );
     }
   }
 
-  Widget _itemTask(TaskModel task) {
+  Widget _itemTask({@required TaskModel task, @required BuildContext context}) {
     return ListTile(
-      onTap: () {},
+      onTap: () => Navigator.pushNamed(context, TaskView.routeName,
+          arguments: {"task": task}),
       title: Text(task.title),
       subtitle: Text(task.dueDate.toString()),
     );
@@ -47,7 +53,8 @@ class _HomeMobile extends StatelessWidget {
 
   Widget _btnAdd(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => Navigator.pushNamed(context, TaskView.routeName),
+      onPressed: () => Navigator.pushNamed(context, TaskView.routeName,
+          arguments: {"task": null}),
       backgroundColor: Colors.blue[900],
       child: const Icon(Icons.add),
     );
