@@ -1,5 +1,6 @@
 class TaskModel {
   TaskModel({
+    this.id,
     this.title,
     this.isCompleted,
     this.dueDate,
@@ -8,6 +9,7 @@ class TaskModel {
     this.tags,
   });
 
+  int id;
   String title;
   bool isCompleted;
   String dueDate;
@@ -16,6 +18,7 @@ class TaskModel {
   String tags;
 
   factory TaskModel.fromJson(Map<String, dynamic> json) => TaskModel(
+        id: json['id'],
         title: json["title"] ?? '',
         isCompleted: json["is_completed"] ?? true,
         dueDate: json["due_date"],

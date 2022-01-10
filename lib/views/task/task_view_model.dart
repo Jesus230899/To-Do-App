@@ -3,16 +3,26 @@ import 'package:to_do_app/core/base/base_view_model.dart';
 import 'package:to_do_app/core/models/task_model.dart';
 import 'package:to_do_app/core/services/http_services.dart';
 import 'package:intl/intl.dart';
+import 'package:to_do_app/widgets/alerts.dart';
+import 'package:to_do_app/widgets/snakbar.dart';
 
 class TaskViewModel extends BaseViewModel {
   final HTTPServices _httpServices = HTTPServices();
   GlobalKey<FormState> formKey = GlobalKey();
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionControler = TextEditingController();
+  TextEditingController commentController = TextEditingController();
   TaskModel _taskModel;
+  bool _isCompleted = false;
+  String _tag = 'General';
+  bool isEditable;
+  bool _loader = false;
 
   // // Getters
   TaskModel get taskModel => _taskModel;
+  bool get isCompleted => _isCompleted;
+  String get tag => _tag;
+  bool get loader => _loader;
 
   // // Setters
   set taskModel(TaskModel value) {
@@ -20,40 +30,130 @@ class TaskViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  set isCompleted(bool value) {
+    _isCompleted = value;
+    notifyListeners();
+  }
+
+  set tag(String value) {
+    _tag = value;
+    notifyListeners();
+  }
+
+  set loader(bool value) {
+    _loader = value;
+    notifyListeners();
+  }
+
   void onInit({@required BuildContext context}) {
     var arg = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    isEditable = arg['edit'];
     if (arg['task'] != null) {
       taskModel = arg['task'];
+      tag = taskModel.tags;
       titleController.text = taskModel.title;
       descriptionControler.text = taskModel.description;
     }
   }
 
-  void saveTask(BuildContext context) async {
+  void onPressed(BuildContext context) async {
     // If we want validate with validator atribute uncomment this line
     // if (formKey.currentState.validate()) {
-    if (titleController.text.isNotEmpty &&
-        descriptionControler.text.isNotEmpty) {
+    if (titleController.text.isNotEmpty) {
       TaskModel taskTemp = TaskModel(
-          comments: 'Este es un comentario',
-          description: "Esta es la descripcion",
+          id: taskModel.id,
+          comments:
+              commentController.text.isEmpty ? '' : commentController.text,
+          description: titleController.text.isEmpty ? '' : titleController.text,
           dueDate: getCurrentDate(),
-          isCompleted: false,
-          tags: "Este es un tag",
-          title: "Este es el titulo");
-      getCurrentDate();
-      Map<String, dynamic> response = await _httpServices.createTask(taskTemp);
-
-      // if(response['status']){
-
-      // }
-
-    } else {}
+          isCompleted: isCompleted,
+          tags: tag,
+          title: titleController.text);
+      if (isEditable) {
+        _updateTask(taskTemp, context);
+      } else {
+        _createTask(taskTemp, context);
+      }
+    } else {
+      showDialogInfo(
+          context: context,
+          title: 'Campos vacios',
+          description: 'El título es obligatorio');
+    }
   }
 
   String getCurrentDate() {
     var dateFormate = DateFormat("yyyy-MM-dd")
         .format(DateTime.parse(DateTime.now().toString()));
     return dateFormate;
+  }
+
+  void _updateTask(TaskModel task, BuildContext context) {
+    loader = true;
+    _httpServices.updateTask(task).then((resp) {
+      if (resp['status']) {
+        showSnakBar(
+            context: context, color: Colors.green, text: 'Tarea eliminada');
+      } else {
+        showSnakBar(
+            context: context,
+            color: Colors.red,
+            text: 'Error al eliminar la tarea');
+      }
+      loader = false;
+      Navigator.pop(context);
+    });
+  }
+
+  void _createTask(TaskModel task, BuildContext context) {
+    loader = true;
+    _httpServices.createTask(task).then((resp) {
+      if (resp['status']) {
+        showSnakBar(
+            context: context, color: Colors.green, text: 'Tarea eliminada');
+      } else {
+        showSnakBar(
+            context: context,
+            color: Colors.red,
+            text: 'Error al eliminar la tarea');
+      }
+      loader = false;
+      Navigator.pop(context);
+    });
+  }
+
+  void onPressedDelete(BuildContext context) {
+    showDialogInfo(
+      context: context,
+      title: 'Espera!',
+      description: 'Estás seguro de borrar esta tarea?',
+      onPressed: () => _deleteTask(context),
+    );
+  }
+
+  void _deleteTask(BuildContext context) {
+    loader = true;
+    Navigator.pop(context);
+    TaskModel taskTemp = TaskModel(
+        id: taskModel.id,
+        comments: commentController.text.isEmpty ? '' : commentController.text,
+        description: titleController.text.isEmpty ? '' : titleController.text,
+        dueDate: getCurrentDate(),
+        isCompleted: isCompleted,
+        tags: tag,
+        title: titleController.text);
+    _httpServices.deleteTask(taskTemp).then((resp) {
+      if (resp['status']) {
+        showSnakBar(
+            context: context, color: Colors.green, text: 'Tarea eliminada');
+      } else {
+        showSnakBar(
+            context: context,
+            color: Colors.red,
+            text: 'Error al eliminar la tarea');
+      }
+      loader = false;
+      Navigator.pop(context);
+    });
   }
 }

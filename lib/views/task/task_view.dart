@@ -3,8 +3,10 @@ library task_view;
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
-import 'package:to_do_app/core/validator.dart';
+import 'package:to_do_app/core/services/local_data.dart';
 import 'package:to_do_app/theme/theme.dart';
+import 'package:to_do_app/widgets/loader.dart';
+import 'package:to_do_app/widgets/tag.dart';
 import 'task_view_model.dart';
 
 part 'task_mobile.dart';
