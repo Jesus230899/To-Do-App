@@ -14,6 +14,7 @@ part 'task_mobile.dart';
 
 class TaskView extends StatelessWidget {
   const TaskView({Key key}) : super(key: key);
+  // We specify the name of the route, this is used when we go to this page and is referenced in the routes.dart file.
   static const routeName = 'TaskView';
 
   @override
@@ -23,8 +24,8 @@ class TaskView extends StatelessWidget {
     return ViewModelBuilder<TaskViewModel>.reactive(
         viewModelBuilder: () => viewModel,
         onModelReady: (viewModel) {
+          // We call this function on the init of the screen to fill de data sended in arguments.
           viewModel.onInit(context: context);
-          // Do something once your viewModel is initialized
         },
         builder: (context, viewModel, child) {
           return ScreenTypeLayout(

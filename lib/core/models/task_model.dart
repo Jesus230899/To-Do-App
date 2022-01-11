@@ -1,3 +1,6 @@
+// Important
+// This file contains the model of the taskModel, here are the fromJson and toJson functions.
+
 class TaskModel {
   TaskModel({
     this.id,

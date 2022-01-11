@@ -7,6 +7,7 @@ class _TaskMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // We show a Stack to show a loader in the middle of the screen.
     return Stack(
       children: [
         Scaffold(
@@ -18,6 +19,7 @@ class _TaskMobile extends StatelessWidget {
     );
   }
 
+  // This function return a loader
   Widget _showloader(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Visibility(
@@ -37,6 +39,7 @@ class _TaskMobile extends StatelessWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
+          // This widget show the cupertino switch to complete the task.
           Row(children: [
             const Text('Completada', style: TextStyle(color: Colors.black)),
             const SizedBox(width: 5),
@@ -45,6 +48,7 @@ class _TaskMobile extends StatelessWidget {
                 onChanged: (value) => vM.isCompleted = !vM.isCompleted)
           ]),
           _divider(),
+          // If the task is editable, ww show the button to delete the task.
           Visibility(
             visible: vM.isEditable,
             child: IconButton(
@@ -53,6 +57,7 @@ class _TaskMobile extends StatelessWidget {
             ),
           ),
           _divider(),
+          // This button save the task.
           IconButton(
             onPressed: () => vM.onPressed(context),
             icon: const Icon(Icons.check, color: Colors.black),
@@ -60,6 +65,7 @@ class _TaskMobile extends StatelessWidget {
         ]);
   }
 
+  // This function return a divider that is used in the appbar to separate the button actions.
   Widget _divider() {
     return Visibility(
       visible: vM.isEditable,
@@ -72,6 +78,7 @@ class _TaskMobile extends StatelessWidget {
     );
   }
 
+  // This widget return the body of the screen.
   Widget _body(BuildContext context) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -88,9 +95,11 @@ class _TaskMobile extends StatelessWidget {
                   controller: vM.titleController,
                   decoration: _decoration(isTitle: true),
                   style: const TextStyle(fontSize: 24)),
+              // This TextFormField has a SizedBox parent, this is used tho show in all screen the textfield.
               SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: TextFormField(
+                    // All line in the textfield has a 24 height, for this reason we calculate the height of the screen between the height of the line.
                     maxLines:
                         MediaQuery.of(context).size.height.toInt() ~/ 24 - 2,
                     // If we want validate with validator atribute uncomment this line
@@ -104,6 +113,7 @@ class _TaskMobile extends StatelessWidget {
     );
   }
 
+  // This function return a widget, this is the list of tags created locally
   Widget _listTag() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,6 +121,7 @@ class _TaskMobile extends StatelessWidget {
         const Text('Etiquetas'),
         const SizedBox(height: 10),
         SizedBox(
+          // We define the height of this list.
           height: 40,
           child: ListView.separated(
             physics: const BouncingScrollPhysics(),
@@ -125,12 +136,15 @@ class _TaskMobile extends StatelessWidget {
     );
   }
 
+  // This function return a item tag.
   Widget _itemTag(String tag) {
+    // If the tag from param is equal to tag in viewModel it means that is selected
     bool isSelected = tag == vM.tag;
     return customTag(
         onPressed: () => vM.tag = tag, isSelected: isSelected, name: tag);
   }
 
+  // We define the decoration of the TextFormField for this screen.
   InputDecoration _decoration({@required isTitle}) {
     return InputDecoration(
       contentPadding: const EdgeInsets.all(5),

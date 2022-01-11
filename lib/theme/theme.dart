@@ -1,7 +1,9 @@
+// important!
+// This fie contains the custom theme used in the app
+
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // static const primaryColor = Color(0xff3b4663);
   static Color accentColor = Colors.blue[900];
   static const primaryColor = Color(0xfff7f7f7);
 }

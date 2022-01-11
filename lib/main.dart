@@ -23,8 +23,10 @@ class MainApplication extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: locator<NavigatorService>().navigatorKey,
+        // Assign the custom theme created to the app
         theme: theme,
         home: const HomeView(),
+        // Assign the routes file created to route of app
         routes: routes,
       ),
     );

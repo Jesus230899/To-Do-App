@@ -6,11 +6,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:to_do_app/core/models/task_model.dart';
-import 'package:to_do_app/core/services/local_data.dart';
 import 'package:to_do_app/theme/theme.dart';
 import 'package:to_do_app/views/task/task_view.dart';
 import 'package:to_do_app/widgets/loader.dart';
-import 'package:to_do_app/widgets/tag.dart';
 import 'home_view_model.dart';
 
 part 'home_mobile.dart';
@@ -24,10 +22,11 @@ class HomeView extends StatelessWidget {
     return ViewModelBuilder<HomeViewModel>.reactive(
         viewModelBuilder: () => viewModel,
         onModelReady: (viewModel) {
+          // We use onInit to initialize some information requiered in HomeMobile
           viewModel.onInit();
-          // Do something once your viewModel is initialized
         },
         builder: (context, viewModel, child) {
+          // In this structure, we will define some types of devices, in this case all design is showed like mobile device.
           return ScreenTypeLayout(
             mobile: _HomeMobile(viewModel),
             desktop: _HomeMobile(viewModel),

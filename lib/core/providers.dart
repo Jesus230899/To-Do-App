@@ -11,11 +11,11 @@ class ProviderInjector {
     ..._consumableServices,
   ];
 
-  static List<SingleChildWidget> _independentServices = [
+  static final List<SingleChildWidget> _independentServices = [
     Provider.value(value: locator<NavigatorService>()),
   ];
 
-  static List<SingleChildWidget> _dependentServices = [];
+  static final List<SingleChildWidget> _dependentServices = [];
 
-  static List<SingleChildWidget> _consumableServices = [];
+  static final List<SingleChildWidget> _consumableServices = [];
 }

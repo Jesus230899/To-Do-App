@@ -1,14 +1,20 @@
+// important!
+// This fie contains recyclable alerts used in the app
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// I specify the parameters are obligatory in this Widget for proper operation
 showDialogInfo(
     {@required BuildContext context,
     @required String title,
     @required String description,
     Function onPressed}) {
+  // This conditional is used to identify the operative system.
   if (Platform.isIOS) {
+    // Return dialog from cupertino library
     return showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
@@ -19,6 +25,7 @@ showDialogInfo(
               ),
               content: Text(description),
               actions: [
+                // If onPressed is null, this action is hide
                 Visibility(
                   visible: onPressed != null,
                   child: CupertinoDialogAction(
@@ -33,6 +40,7 @@ showDialogInfo(
               ],
             ));
   } else {
+    // Return dialog from material
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -47,6 +55,7 @@ showDialogInfo(
               ),
               content: Text(description),
               actions: [
+                // If onPressed is null, this action is hide.
                 Visibility(
                   visible: onPressed != null,
                   child: InkWell(
