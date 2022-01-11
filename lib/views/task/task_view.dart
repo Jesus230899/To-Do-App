@@ -1,5 +1,6 @@
 library task_view;
 
+import 'package:flutter/cupertino.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';

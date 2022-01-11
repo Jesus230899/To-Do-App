@@ -8,7 +8,9 @@ class HTTPServices {
   Future<List<TaskModel>> getTasks() async {
     try {
       var response = await _dio.get('$baseUrl/tasks',
-          options: Options(headers: {"Authorization": "Bearer $token"}));
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {'token': token});
+      // print(response.data);
       if (response.statusCode >= 400) {
         return [];
       } else {
@@ -31,7 +33,9 @@ class HTTPServices {
           data: task.toJson(),
           options: Options(
               headers: {"Authorization": "Bearer $token"},
-              contentType: Headers.formUrlEncodedContentType));
+              contentType: Headers.formUrlEncodedContentType),
+          queryParameters: {'token': token});
+      print(response.data);
       if (response.statusCode >= 400) {
         return {"status": false};
       } else {
@@ -49,7 +53,8 @@ class HTTPServices {
           data: task.toJson(),
           options: Options(
               headers: {"Authorization": "Bearer $token"},
-              contentType: Headers.formUrlEncodedContentType));
+              contentType: Headers.formUrlEncodedContentType),
+          queryParameters: {'token': token});
       if (response.statusCode >= 400) {
         return {"status": false};
       } else {

@@ -51,6 +51,7 @@ class TaskViewModel extends BaseViewModel {
     if (arg['task'] != null) {
       taskModel = arg['task'];
       tag = taskModel.tags;
+      isCompleted = taskModel.isCompleted == 0 ? false : true;
       titleController.text = taskModel.title;
       descriptionControler.text = taskModel.description;
     }
@@ -60,18 +61,29 @@ class TaskViewModel extends BaseViewModel {
     // If we want validate with validator atribute uncomment this line
     // if (formKey.currentState.validate()) {
     if (titleController.text.isNotEmpty) {
-      TaskModel taskTemp = TaskModel(
-          id: taskModel.id,
-          comments:
-              commentController.text.isEmpty ? '' : commentController.text,
-          description: titleController.text.isEmpty ? '' : titleController.text,
-          dueDate: getCurrentDate(),
-          isCompleted: isCompleted,
-          tags: tag,
-          title: titleController.text);
+      TaskModel taskTemp;
       if (isEditable) {
+        taskTemp = TaskModel(
+            id: taskModel.id,
+            comments:
+                commentController.text.isEmpty ? '' : commentController.text,
+            description:
+                titleController.text.isEmpty ? '' : titleController.text,
+            dueDate: getCurrentDate(),
+            isCompleted: isCompleted ? 1 : 0,
+            tags: tag,
+            title: titleController.text);
         _updateTask(taskTemp, context);
       } else {
+        taskTemp = TaskModel(
+            comments:
+                commentController.text.isEmpty ? '' : commentController.text,
+            description:
+                titleController.text.isEmpty ? '' : titleController.text,
+            dueDate: getCurrentDate(),
+            isCompleted: isCompleted ? 1 : 0,
+            tags: tag,
+            title: titleController.text);
         _createTask(taskTemp, context);
       }
     } else {
@@ -93,15 +105,15 @@ class TaskViewModel extends BaseViewModel {
     _httpServices.updateTask(task).then((resp) {
       if (resp['status']) {
         showSnakBar(
-            context: context, color: Colors.green, text: 'Tarea eliminada');
+            context: context, color: Colors.green, text: 'Tarea modificada');
       } else {
         showSnakBar(
             context: context,
             color: Colors.red,
-            text: 'Error al eliminar la tarea');
+            text: 'Error al modificar la tarea');
       }
       loader = false;
-      Navigator.pop(context);
+      // Navigator.pop(context);
     });
   }
 
@@ -118,7 +130,7 @@ class TaskViewModel extends BaseViewModel {
             text: 'Error al eliminar la tarea');
       }
       loader = false;
-      Navigator.pop(context);
+      Navigator.pop(context, task);
     });
   }
 
@@ -139,7 +151,7 @@ class TaskViewModel extends BaseViewModel {
         comments: commentController.text.isEmpty ? '' : commentController.text,
         description: titleController.text.isEmpty ? '' : titleController.text,
         dueDate: getCurrentDate(),
-        isCompleted: isCompleted,
+        isCompleted: 0,
         tags: tag,
         title: titleController.text);
     _httpServices.deleteTask(taskTemp).then((resp) {
@@ -153,7 +165,7 @@ class TaskViewModel extends BaseViewModel {
             text: 'Error al eliminar la tarea');
       }
       loader = false;
-      Navigator.pop(context);
+      Navigator.pop(context, taskTemp.id);
     });
   }
 }

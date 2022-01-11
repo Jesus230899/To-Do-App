@@ -10,7 +10,7 @@ showSnakBar(
         text,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
         textAlign: TextAlign.center,

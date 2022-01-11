@@ -9,12 +9,10 @@ class _HomeMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: SingleChildScrollView(
-        child: RefreshIndicator(
-            color: AppColors.accentColor,
-            onRefresh: () async => await vM.getNotes(),
-            child: _body(context)),
-      ),
+      body: RefreshIndicator(
+          color: AppColors.accentColor,
+          onRefresh: () async => await vM.getNotes(),
+          child: _body(context)),
       floatingActionButton: _btnAdd(context),
     );
   }
@@ -50,68 +48,6 @@ class _HomeMobile extends StatelessWidget {
             )));
   }
 
-  Widget _filter() {
-    return ExpansionTile(
-      title: const Text('Filtrar', style: TextStyle(color: Colors.black)),
-      iconColor: Colors.black,
-      children: [
-        _listTag(),
-        const Divider(),
-        _estatus(),
-      ],
-    );
-  }
-
-  Widget _listTag() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Etiquetas'),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 40,
-          child: ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: tags.length,
-            itemBuilder: (context, index) => _itemTag(tags[index]),
-            separatorBuilder: (context, index) => const SizedBox(width: 5),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _itemTag(String tag) {
-    bool isSelected = tag == vM.tag;
-    return customTag(
-        onPressed: () => vM.tag = tag, isSelected: isSelected, name: tag);
-  }
-
-  Widget _estatus() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Estado'),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            customTag(
-                onPressed: () => vM.status = 'Completado',
-                isSelected: vM.status == 'Completado',
-                name: 'Completado'),
-            customTag(
-                onPressed: () => vM.status = 'No completado',
-                isSelected: vM.status == 'No completado',
-                name: 'No completado'),
-          ],
-        ),
-      ],
-    );
-  }
-
   Widget _lisTasks(BuildContext context) {
     const int appBarHeight = 50;
     if (vM.tasks.isEmpty) {
@@ -135,13 +71,16 @@ class _HomeMobile extends StatelessWidget {
       return FadeIn(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              _search(),
-              // _filter(),
-              const SizedBox(height: 20),
-              _list(context),
-            ],
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                _search(),
+                // _filter(),
+                const SizedBox(height: 20),
+                _list(context),
+              ],
+            ),
           ),
         ),
       );
@@ -155,8 +94,7 @@ class _HomeMobile extends StatelessWidget {
           child: const Text('No hubo resultados.',
               style: TextStyle(color: Colors.grey)));
     }
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.7,
+    return Expanded(
       child: ListView.separated(
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
@@ -171,12 +109,17 @@ class _HomeMobile extends StatelessWidget {
   Widget _itemTask({@required TaskModel task, @required BuildContext context}) {
     return Container(
       decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        color: Colors.white,
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          color: Colors.white),
       child: ListTile(
         onTap: () => Navigator.pushNamed(context, TaskView.routeName,
-            arguments: {"task": task, "edit": true}),
+            arguments: {"task": task, "edit": true}).then((value) {
+          if (value != null) {
+            vM.updateTasks(value);
+          } else {
+            vM.getNotes();
+          }
+        }),
         title: Text(
           task.title,
           style: const TextStyle(
@@ -187,19 +130,13 @@ class _HomeMobile extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(task.description.substring(
-                0,
-                (task.description.length >= 50
-                    ? 50
-                    : task.description.length))),
-            Text(task.dueDate.toString()),
+            Text(task.dueDate == null ? '' : task.dueDate.toString()),
           ],
         ),
-        trailing: SizedBox(
-            width: 100,
-            height: 40,
-            child:
-                customTag(onPressed: null, isSelected: false, name: task.tags)),
+        trailing: Visibility(
+            visible: task.isCompleted == 1,
+            child: const Icon(Icons.check_circle_outline_outlined,
+                color: Colors.green)),
       ),
     );
   }
@@ -207,7 +144,11 @@ class _HomeMobile extends StatelessWidget {
   Widget _btnAdd(BuildContext context) {
     return FloatingActionButton(
       onPressed: () => Navigator.pushNamed(context, TaskView.routeName,
-          arguments: {"task": null, "edit": false}),
+          arguments: {"task": null, "edit": false}).then((value) {
+        if (value != null) {
+          vM.addTask(value);
+        }
+      }),
       backgroundColor: Colors.blue[900],
       child: const Icon(Icons.add),
     );

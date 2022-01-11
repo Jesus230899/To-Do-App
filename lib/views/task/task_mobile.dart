@@ -37,6 +37,14 @@ class _TaskMobile extends StatelessWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
+          Row(children: [
+            const Text('Completada', style: TextStyle(color: Colors.black)),
+            const SizedBox(width: 5),
+            CupertinoSwitch(
+                value: vM.isCompleted,
+                onChanged: (value) => vM.isCompleted = !vM.isCompleted)
+          ]),
+          _divider(),
           Visibility(
             visible: vM.isEditable,
             child: IconButton(

@@ -11,7 +11,7 @@ class TaskModel {
 
   int id;
   String title;
-  bool isCompleted;
+  int isCompleted;
   String dueDate;
   String comments;
   String description;
